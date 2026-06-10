@@ -2,7 +2,7 @@
 
 A daily technical scanner over a **294-stock NSE universe**. It returns the stocks
 that satisfy a strict 5-condition breakout setup, a ranked **watchlist** of setups
-still forming, and an ATR-based **trade plan** (stop/target) for each signal. Built
+still forming. Built
 with free tools only.
 
 > **Educational tool — not investment advice.** See [`DISCLAIMER.md`](DISCLAIMER.md).
@@ -19,7 +19,7 @@ with free tools only.
 
 Output columns: Symbol, Company Name, Current Price, RSI, DEMA20/50/100/200,
 Current Volume, 10-Day Average Volume, Volume Ratio, Trendline Breakout (Yes/No),
-Retest Confirmed (Yes/No), plus ATR / Stop Loss / Target / Risk% / Reward%.
+Retest Confirmed (Yes/No).
 
 ## What's in the box
 
@@ -75,13 +75,12 @@ python backtest.py 60 20      # backtest 60 stocks, 20-day horizon
   Yahoo outage degrades gracefully instead of breaking the app. (The store needs one
   successful run to seed full history; it then stays current automatically.)
 
-## Risk plan & backtest
+## Backtest (internal tool)
 
-- Each signal carries an **ATR-based stop-loss and target** (default 1.5×ATR stop,
-  1:2 risk/reward) in the dashboard and the Excel **Trade Plan** sheet.
 - `backtest.py` replays history bar-by-bar (no look-ahead) and reports win-rate,
   average win/loss and expectancy. It is a **simplified** simulation (ignores
-  slippage, brokerage, taxes, gaps, liquidity) — directional, not a promise.
+  slippage, brokerage, taxes, gaps, liquidity) and is an internal validation tool —
+  not shown to clients and not a promise of returns.
 
 ## Compliance & data terms
 

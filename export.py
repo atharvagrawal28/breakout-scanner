@@ -29,20 +29,9 @@ def build_workbook(scan_df: pd.DataFrame, run_dt: datetime = None) -> bytes:
     sig = scanner.signals_only(scan_df)
     wl = scanner.watchlist(scan_df, min_score=3)
 
-    risk_cols = ["ATR", "Stop Loss", "Target", "Risk %", "Reward %", "Risk:Reward"]
-    all_cols = (scanner.EXPORT_COLUMNS + ["Trendline Level"] + risk_cols +
-                ["Score", "Missing", "Sector"])
+    all_cols = (scanner.EXPORT_COLUMNS + ["Trendline Level", "Score", "Missing", "Sector"])
     all_cols = [c for c in all_cols if scan_df.empty or c in scan_df.columns]
     alldf = scan_df[all_cols].copy() if not scan_df.empty else pd.DataFrame(columns=all_cols)
-
-    # Trade Plan = strict signals + ATR-based risk levels
-    tp_cols = ["Symbol", "Company Name", "Current Price", "Stop Loss", "Target",
-               "Risk %", "Reward %", "Risk:Reward", "ATR"]
-    if not scan_df.empty:
-        tp = scan_df[scan_df["_passes_all"]].copy()
-        tp = tp[[c for c in tp_cols if c in tp.columns]].reset_index(drop=True)
-    else:
-        tp = pd.DataFrame(columns=tp_cols)
 
     buf = io.BytesIO()
     with pd.ExcelWriter(buf, engine="xlsxwriter") as xw:
@@ -78,10 +67,6 @@ def build_workbook(scan_df: pd.DataFrame, run_dt: datetime = None) -> bytes:
                     pd.DataFrame(columns=["Symbol", "Company Name", "Score", "Missing"]),
                     "Near-misses (3-4 of 5). 'Missing' shows which condition(s) failed.")
 
-        # Trade Plan
-        write_sheet("Trade Plan", tp,
-                    "ATR-based stop-loss & target for each strict signal (1:2 risk/reward). "
-                    "Educational only - not advice.")
         # All
         write_sheet("All Stocks", alldf,
                     "Every evaluated stock, ranked by Score (5 = full signal).")
