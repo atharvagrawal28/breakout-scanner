@@ -140,6 +140,17 @@ def fetch_one(ticker: str):
 SCAN_HOUR_IST, SCAN_MIN_IST = 8, 45
 
 
+def fmt_ts(ts: str) -> str:
+    """Turn '2026-06-10 06:00:00' into a short '10 Jun, 06:00' for the metric box."""
+    from datetime import datetime as _dtm
+    for f in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"):
+        try:
+            return _dtm.strptime(str(ts), f).strftime("%d %b, %H:%M")
+        except Exception:
+            continue
+    return str(ts)
+
+
 def next_refresh_ist():
     from datetime import datetime, timedelta, timezone
     ist = timezone(timedelta(hours=5, minutes=30))
@@ -211,7 +222,7 @@ cached, cached_ts = load_cached_results()
 col_a, col_b, col_c = st.columns([1, 1, 2])
 run = col_a.button("🔍 Run Live Scan", type="primary", use_container_width=True)
 if cached is not None:
-    col_b.metric("Last auto-scan", cached_ts)
+    col_b.metric("Last auto-scan", fmt_ts(cached_ts), help=f"Full timestamp: {cached_ts}")
 col_c.caption("‘Run Live Scan’ pulls fresh data now (~1–3 min). The auto-scan "
               "(GitHub Actions) refreshes results every morning.")
 
