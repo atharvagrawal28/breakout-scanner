@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
+.streamlit/secrets.toml
+# scratch / temporary scan artifacts
+results/_chunk_*.pkl
+scan_run.log
+synctest_new.txt
